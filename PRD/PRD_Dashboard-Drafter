@@ -1,0 +1,190 @@
+# PRD — Dashboard Drafter
+## DOF Digital Office Platform
+
+**Versi:** 1.0 — Draft untuk Review
+**Tanggal:** Mei 2026
+**Scope:** Dashboard role Drafter — simpel, actionable, fokus ke task
+
+---
+
+## 1. Product Intent
+
+Dashboard Drafter harus menjawab satu pertanyaan utama:
+
+> **"Apa yang harus saya kerjakan sekarang?"**
+
+Dashboard bukan rekap semua angka. Dashboard adalah shortcut ke pekerjaan yang paling penting hari ini — buat surat baru, revisi yang dikembalikan, atau pantau status surat yang sedang diproses.
+
+---
+
+## 2. Prinsip Desain
+
+- Satu halaman, satu fokus — tidak overwhelm user dengan data
+- Action paling penting selalu dalam jangkauan — tombol "Buat Surat Baru" selalu visible
+- Surat yang butuh aksi muncul lebih dulu dari surat yang hanya perlu dipantau
+- Catatan revisi ditampilkan inline — user tidak perlu masuk ke detail untuk tahu apa yang harus diperbaiki
+
+---
+
+## 3. Layout Structure
+
+```
+Welcome Bar + CTA Buat Surat Baru
+↓
+Alert (kondisional — hanya muncul jika ada)
+↓
+Status Cards (4 card)
+↓
+Worklist 1 — Perlu Tindakan (Dikembalikan + Draft)
+↓
+Worklist 2 — Sedang Diproses (read-only, pantau saja)
+```
+
+---
+
+## 4. Welcome Bar
+
+**Konten:**
+- Sapaan personal: "Selamat pagi/siang/sore, [Nama]."
+- Sub-info: "[Unit Kerja] · Ada [N] surat yang membutuhkan perhatian Anda."
+- Tombol **Buat Surat Baru** — primary button, selalu visible di pojok kanan welcome bar
+
+**Rules:**
+- Sapaan berubah berdasarkan waktu: pagi (06.00–11.59), siang (12.00–14.59), sore (15.00–18.59), malam (19.00–05.59)
+- Angka "N surat" = jumlah surat dikembalikan + draft belum dikirim
+- Jika N = 0, sub-info berubah: "Semua surat sudah tertangani. Tidak ada tindakan yang diperlukan."
+
+---
+
+## 5. Alert Bar (Kondisional)
+
+Alert hanya muncul jika ada kondisi yang perlu perhatian segera. Tidak muncul jika tidak ada kondisi yang terpenuhi.
+
+| Kondisi | Jenis Alert | Copy |
+|---|---|---|
+| Ada surat dikembalikan | Warning | "[N] surat dikembalikan oleh Reviewer dan perlu direvisi." + link "Lihat sekarang →" |
+| Ada surat dibatalkan | Danger | "[N] surat dibatalkan dan tidak dapat dilanjutkan." + link "Lihat detail →" |
+
+**Rules:**
+- Maksimal satu alert yang ditampilkan — prioritaskan warning di atas danger jika keduanya ada
+- Alert bisa di-dismiss oleh user
+- Alert tidak tampil jika tidak ada kondisi yang terpenuhi
+
+---
+
+## 6. Status Cards
+
+Empat card ditampilkan dalam satu baris grid.
+
+| # | Label | Isi | Visual | Direct Action |
+|---|---|---|---|---|
+| 1 | Dikembalikan, perlu revisi | Jumlah surat yang dikembalikan Reviewer/Approver | Warning (border + bg kuning) | "Revisi sekarang" → Worklist 1 |
+| 2 | Draft belum dikirim | Jumlah draft yang belum disubmit ke Reviewer | Default | "Lanjutkan" → Worklist 1 |
+| 3 | Sedang diproses | Jumlah surat yang sedang di Reviewer atau Approver | Primary (border + bg hijau) | "Pantau status" → Worklist 2 |
+| 4 | Selesai bulan ini | Jumlah surat yang sudah selesai di bulan berjalan | Default | "Lihat riwayat" → Daftar Surat tab Disetujui |
+
+**Rules:**
+- Card 1 (Dikembalikan) selalu di posisi pertama — paling urgent
+- Jika nilai card = 0, tetap ditampilkan dengan angka 0 — tidak dihide
+- Klik card membawa user ke worklist yang relevan, bukan ke halaman baru
+
+---
+
+## 7. Worklist 1 — Perlu Tindakan
+
+Menampilkan surat yang butuh aksi langsung dari Drafter: dikembalikan dan draft belum dikirim.
+
+**Urutan tampil:**
+1. Surat dikembalikan — diurutkan dari yang paling baru dikembalikan
+2. Draft belum dikirim — diurutkan dari yang paling baru diedit
+
+**Kolom per item:**
+- Dot indikator (warna sesuai status)
+- Judul surat
+- Badge status: "Dikembalikan" (warning) atau "Draft" (neutral)
+- Sub-info: dikembalikan oleh siapa & tanggal, atau terakhir diedit tanggal
+- Catatan revisi — ditampilkan inline di bawah meta jika ada catatan dari Reviewer/Approver
+- Tombol aksi
+
+**Tombol aksi per status:**
+
+| Status | Tombol | Behavior |
+|---|---|---|
+| Dikembalikan | Revisi (warning style) | Masuk ke Detail Surat dalam mode edit |
+| Draft | Lanjutkan (neutral style) | Masuk ke form Buat Surat Baru dengan data tersimpan |
+
+**Rules:**
+- Catatan revisi ditampilkan inline maksimal 1 baris — jika lebih panjang, truncate dengan "..." dan full text bisa dilihat di Detail Surat
+- Maksimal 5 item ditampilkan — ada link "Lihat semua" di header worklist
+- Jika kosong: empty state — "Tidak ada surat yang perlu direvisi atau dilanjutkan. Semua sudah tertangani."
+
+---
+
+## 8. Worklist 2 — Sedang Diproses
+
+Menampilkan surat yang sedang dalam proses review atau approval — read-only, Drafter tidak bisa melakukan aksi apapun.
+
+**Tujuan:** Drafter bisa memantau posisi surat tanpa harus masuk ke Daftar Surat.
+
+**Kolom per item:**
+- Dot indikator (hijau)
+- Judul surat
+- Badge status: "Menunggu Review" atau "Menunggu Approval" (info style)
+- Sub-info: "Di: [Nama] · [Jabatan]" — menunjukkan surat sedang di tangan siapa
+- Tombol "Pantau" → masuk ke Detail Surat (read-only)
+
+**Rules:**
+- Diurutkan dari yang paling lama menunggu (oldest first) — supaya Drafter tahu mana yang sudah lama tidak bergerak
+- Maksimal 5 item — ada link "Lihat semua"
+- Jika kosong: empty state — "Tidak ada surat yang sedang diproses saat ini."
+
+---
+
+## 9. Empty State — Dashboard Kosong
+
+Jika Drafter tidak punya surat apapun (baru bergabung atau semua sudah selesai):
+
+```
+Belum ada surat yang dibuat.
+Mulai buat surat pertama Anda untuk memulai proses.
+
+[Buat Surat Baru]
+```
+
+---
+
+## 10. Status Mapping untuk Dashboard
+
+| Status Backend | Label di Dashboard | Masuk Worklist |
+|---|---|---|
+| DRAFT | Draft belum dikirim | Worklist 1 |
+| DIREVISI_REVIEWER | Dikembalikan, perlu revisi | Worklist 1 |
+| MENUNGGU_REVIEW_REVIEWER1 | Menunggu Review | Worklist 2 |
+| MENUNGGU_REVIEW_REVIEWER2 | Menunggu Review | Worklist 2 |
+| MENUNGGU_APPROVAL | Menunggu Approval | Worklist 2 |
+| DISETUJUI_APPROVER | Selesai | Card 4 (counter) |
+| DIBATALKAN | Dibatalkan | Alert danger |
+
+---
+
+## 11. Hal yang Tidak Ditampilkan di Dashboard Drafter
+
+Berikut data yang **sengaja tidak ditampilkan** untuk menjaga fokus:
+
+- Total surat semua status — terlalu banyak angka tanpa konteks
+- Surat Sirkuler — tidak relevan untuk task harian Drafter
+- SP Akan Berakhir — domain Admin/Approver
+- Grafik atau chart performa — terlalu advanced untuk daily use
+- Notifikasi badge besar — digantikan oleh alert bar yang kontekstual
+
+---
+
+## 12. Open Questions
+
+1. Apakah Drafter bisa membatalkan surat sendiri setelah sudah dikirim ke Reviewer, atau hanya Reviewer/Approver yang bisa batalkan?
+2. Apakah "Selesai bulan ini" dihitung dari bulan kalender atau 30 hari terakhir?
+3. Jika ada surat yang dikembalikan lebih dari sekali, apakah catatan revisi yang ditampilkan adalah yang terbaru saja atau semua catatan?
+
+---
+
+*PRD Dashboard Drafter v1.0 — bagian dari PRD DOF Full Flow Persuratan.*
