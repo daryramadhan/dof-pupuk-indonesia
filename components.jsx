@@ -4177,12 +4177,13 @@ const AdminRoutePage = ({ title, subtitle, crumbMid = 'Administrasi' }) => (
 // ─────────────────────────────────────────────
 // POV SWITCHER (demo floating button)
 // ─────────────────────────────────────────────
+// Urutan menu Ganti POV: drafter → reviewer → approver → admin stempel → penerima → admin sistem
 const POV_OPTIONS = [
+  { id: 'PI-15912',  name: 'Cahyo Nugroho',     init: 'CN', role: 'Drafter · Senior Auditor',              color: '#7635DC', bg: '#F3EDFF', type: 'drafter' },
   { id: '1120084',   name: 'Yetty Endarwati',   init: 'YE', role: 'Reviewer 1 · SVP Digitalisasi',         color: '#00753E', bg: '#EBF6F0', type: 'reviewer' },
   { id: '2611582',   name: 'Linda Kurniawati',  init: 'LK', role: 'Reviewer 2 · VP Legal & Compliance',    color: '#0E7AC0', bg: '#E8F2FA', type: 'reviewer' },
   { id: '2511437',   name: 'Dr. Indra Permana', init: 'IP', role: 'Approver · Dir. Operasi & Produksi',    color: '#B76E00', bg: '#FFF7E6', type: 'approver' },
   { id: 'AST-BPO-01', name: 'Wahyu Firmansyah', init: 'WF', role: 'Admin Stempel · BPO Holding',          color: '#1C252E', bg: '#F4F6F8', type: 'admin-stempel' },
-  { id: 'PI-15912',  name: 'Cahyo Nugroho',     init: 'CN', role: 'Drafter · Senior Auditor',              color: '#7635DC', bg: '#F3EDFF', type: 'drafter'  },
   { id: 'TL-REC-01', name: 'Rudi Hartono',      init: 'RH', role: 'Penerima Surat · VP Operasional',        color: '#006C9C', bg: '#E8F2FA', type: 'tujuan' },
   { id: 'ADM-SIS-01', name: 'Eko Widodo',       init: 'EW', role: 'Admin Sistem · IT Holding',             color: '#5119B7', bg: '#F3EDFF', type: 'admin' },
 ];
