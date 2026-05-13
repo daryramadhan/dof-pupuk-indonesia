@@ -1423,13 +1423,6 @@ const SuratTable = ({ onOpenBuatSurat, suratList, onOpenLetter, povType }) => {
             <option value="sangat-segera">Sangat Segera</option>
           </select>
           <DateRangeField from={dateRange.from} to={dateRange.to} onChange={setDateRange} />
-          <div style={{ flex: 1, minWidth: 8 }} />
-          <button type="button" className="btn btn-secondary" onClick={() => window.alert('Export daftar surat (demo prototipe).')}>
-            <Icon name="download" size={14} /> Export
-          </button>
-          <button type="button" className="btn btn-primary" onClick={() => onOpenBuatSurat && onOpenBuatSurat(null)}>
-            <Icon name="plus" size={14} /> Buat Surat Baru
-          </button>
         </div>
 
         <div className="surat-work-tabs">

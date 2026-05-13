@@ -410,11 +410,15 @@ function App() {
             </div>
             {isDrafter && (
               <div className="page-title-actions">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => window.alert('Export daftar surat (demo prototipe).')}
+                >
+                  <Icon name="download" size={16} /> Export
+                </button>
                 <button type="button" className="btn btn-primary" onClick={() => { setSuratFormSeed(null); setActiveView('buat-surat-baru'); }}>
                   <Icon name="plus" size={16} /> Buat Surat Baru
-                </button>
-                <button type="button" className="btn btn-secondary" onClick={() => setActiveView('buat-sp')}>
-                  Buat SP/ASP
                 </button>
               </div>
             )}
