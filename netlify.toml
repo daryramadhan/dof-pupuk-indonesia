@@ -1,0 +1,4 @@
+# Static site: HTML + CSS + JSX (Babel in browser). No npm build.
+[build]
+  command = "echo 'Static deploy'"
+  publish = "."
